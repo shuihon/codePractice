@@ -13,105 +13,62 @@ package letCode;
  * The test cases are generated so that the answer will be less than or equal to 2 * 109.
  */
 public class UniquePath {
-    public int uniuePaths(int m, int n) {
-        //创建地图
-        //0表示可以走的点，2表示走过且通的点，3表示走过但不同但点
-        int arr[][] = new int[m][n];
-        for (int i = 0; i < arr.length; i++) {
-            for (int j = 0; j < arr[i].length; j++) {
 
-                System.out.println(arr[i][j]);
+    private void printPath(int[][] arr) {
+        for (int[] row : arr) {
+            for (int cell : row) {
+                System.out.print(cell + " ");
             }
+            System.out.println();
         }
-        return 0;
+        System.out.println();
     }
-   public boolean findWay(int[][] arr, int m , int n){
-        if(arr[3][4]==2){
-            return true;
-         //找到出路
-        } else  {
-            //当前坐标可以走
-            if(arr[m][n]==0){
-                //假设表示可以走通，设为2
-                arr[m][n]=2;
-                //开始验证是否可以走通？
-                //策略先向下走，再向右走
-                if (findWay(arr,m+1,n)){
-                    return true;
-                } else if (findWay(arr,m,n+1)) {
-                    return true;
-                }else {
-                    //走不通，设置为3
-                    arr[m][n]=3;
-                    return false;
-                }
-            }else {
-                //arr[][] 2 3
-                return false;
-            }
 
+    public int findAllPaths(int[][] arr, int m, int n, int pathCount) {
+        // 检查是否达到终点
+        if (m == 3 && n == 4) {
+            arr[m][n] = 2;  // 标记路径
+            printPath(arr); // 打印当前路径的地图状态
+            arr[m][n] = 0;  // 回溯，恢复未访问状态
+            return pathCount + 1;  // 增加路径计数
         }
-   }
-    public boolean findWay2(int[][] arr, int m , int n){
-        if(arr[3][4]==2){
-            return true;
-            //找到出路
-        } else  {
-            //当前坐标可以走
-            if(arr[m][n]==0){
-                //假设表示可以走通，设为2
-                arr[m][n]=2;
-                //开始验证是否可以走通？
-                //策略先向you走，再向xia走
-                if (findWay(arr,m,n+1)){
-                    return true;
-                } else if (findWay2(arr,m+1,n)) {
-                    return true;
-                }else {
-                    //走不通，设置为3
-                    arr[m][n]=3;
-                    return false;
-                }
-            }else {
-                //arr[][] 2 3
-                return false;
-            }
 
+        // 越界或已访问
+        if (m < 0 || m >= arr.length || n < 0 || n >= arr[0].length || arr[m][n] != 0) {
+            return pathCount;
         }
+
+        // 标记当前位置在路径中
+        arr[m][n] = 2;
+
+        // 四个方向递归搜索
+        pathCount = findAllPaths(arr, m + 1, n, pathCount); // 向下
+        pathCount = findAllPaths(arr, m - 1, n, pathCount); // 向上
+        pathCount = findAllPaths(arr, m, n + 1, pathCount); // 向右
+        pathCount = findAllPaths(arr, m, n - 1, pathCount); // 向左
+
+        // 回溯，恢复未访问状态
+        arr[m][n] = 0;
+
+        return pathCount;
     }
 
     public static void main(String[] args) {
-        int m=5;
-        int n=6;
-        int arr[][] = new int[m][n];
-        System.out.println("当前地图情况：");
+        int m = 5, n = 6;
+        int[][] arr = new int[m][n];
+        // 设置边界为不可访问
+        for (int i = 0; i < m; i++) {
+            arr[i][0] = 1;
+            arr[i][n - 1] = 1;
+        }
+        for (int i = 0; i < n; i++) {
+            arr[0][i] = 1;
+            arr[m - 1][i] = 1;
+        }
 
-        for (int i=0;i<n;i++){
-            //第一行和最后一行设置壁垒
-            arr[0][i]=1;
-            arr[m-1][i]=1;
-        }
-        for (int i=0;i<m;i++){
-            //第一列和最后一列设置壁垒
-            arr[i][0]=1;
-            arr[i][n-1]=1;
-        }
-        for (int i = 0; i < arr.length; i++) {
-
-            for (int j = 0; j < arr[i].length; j++) {
-                System.out.print(arr[i][j]+" ");
-            }
-            System.out.println();
-        }
         UniquePath uniquePath = new UniquePath();
-//        uniquePath.findWay(arr,1,1);
-        uniquePath.findWay2(arr,1,1);
-        System.out.println("走过路de地图情况：");
-        for (int i = 0; i < arr.length; i++) {
-            for (int j = 0; j < arr[i].length; j++) {
-                System.out.print(arr[i][j]+" ");
-            }
-            System.out.println();
-        }
+        int totalPaths = uniquePath.findAllPaths(arr, 1, 1, 0);
+        System.out.println("Total paths found: " + totalPaths);
     }
 }
+
