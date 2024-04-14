@@ -14,8 +14,9 @@ import java.util.ArrayList;
 public class TwoSum {
     public static void main(String[] args) {
         TwoSum twoSum = new TwoSum();
-       int[] ints= {1,2,3,4};
+        int[] ints= {1,2,3,4};
         twoSum.twoSum(ints,5);
+
     }
     @Test
     public int[] twoSum(int[] nums, int target) {
